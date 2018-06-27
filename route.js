@@ -3,21 +3,32 @@ var mongoose=require('mongoose');
 var router=express.Router();
 var User=require('./user');
 
-router.get('/',(req,res)=>{
+router.get('/user',(req,res)=>{
+    User.find(function(err,docs){
+        if(err){
+            res.json({success:false,message:"Retrieval failed"});
+        }
+        else{
+            res.json(docs);
+        }
+    });
+});
+
+router.post('/user',(req,res)=>{
     var user={
-        first_name:"Kick",
-        last_name:"Buttowski",
-        email:"kick@abc.com"
-    };
+        first_name:req.body.firstName,
+        last_name:req.body.lastName,
+        email:req.body.email
+    }
     var newUser=User(user);
     newUser.save(function(err){
         if(err){
-            console.log(err);
+            res.json({message:"User insertion unsuccesfull",success:false});
         }
         else{
-            console.log("User added succesfully");
+            res.json({message:"User Added Succesfully",success:true})
         }
-    })
+    });
 });
 
 module.exports=router;
